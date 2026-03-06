@@ -297,5 +297,5 @@ npm start
 
 ## License
 
-This project is for educational and portfolio use.
+Developed by Soumyosish
 
