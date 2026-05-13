@@ -20,6 +20,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create environment files
+        run: |
+          mkdir -p backend frontend
+          echo "${{ secrets.BACKEND_ENV_DOCKER }}" > backend/.env.docker
+          echo "VITE_API_URL=/api" > frontend/.env.docker
+          echo "VITE_API_URL_AWS=http://${{ env.EC2_IP }}:5000/api" >> frontend/.env.docker
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -43,23 +50,14 @@ jobs:
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}
 
-      - name: Copy AWS compose file to EC2
+      - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.EC2_IP }}
           username: ubuntu
           key: ${{ env.EC2_SSH_KEY }}
-          source: "docker-compose.aws.yml"
+          source: "docker-compose.aws.yml,backend/.env.docker"
           target: "/home/ubuntu/HomeDine"
-
-      - name: Copy backend env file to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ env.EC2_IP }}
-          username: ubuntu
-          key: ${{ env.EC2_SSH_KEY }}
-          source: "backend/.env.docker"
-          target: "/home/ubuntu/HomeDine/backend"
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
@@ -76,6 +74,7 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y docker.io
               sudo systemctl enable --now docker
+              sudo usermod -aG docker ubuntu
             fi
 
             if ! docker compose version >/dev/null 2>&1; then
@@ -86,11 +85,15 @@ jobs:
               sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
             fi
 
-            docker pull ${{ env.BACKEND_IMAGE }}
-            docker pull ${{ env.FRONTEND_IMAGE }}
+            # Set environment variables for docker compose
+            export BACKEND_IMAGE=${{ env.BACKEND_IMAGE }}
+            export FRONTEND_IMAGE=${{ env.FRONTEND_IMAGE }}
+
+            docker pull $BACKEND_IMAGE
+            docker pull $FRONTEND_IMAGE
 
             docker compose -f docker-compose.aws.yml down || true
             docker compose -f docker-compose.aws.yml up -d --remove-orphans
 
             sleep 5
-            curl http://3.26.116.51:5000/api/health || echo "Backend health check pending..."
+            curl http://localhost:5000/api/health || echo "Backend health check pending..."
