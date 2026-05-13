@@ -43,6 +43,15 @@ jobs:
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}
 
+      - name: Copy AWS compose file to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.EC2_IP }}
+          username: ubuntu
+          key: ${{ env.EC2_SSH_KEY }}
+          source: "docker-compose.aws.yml"
+          target: "/home/ubuntu/HomeDine"
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -53,9 +62,6 @@ jobs:
             set -e
 
             cd /home/ubuntu/HomeDine
-
-            # Pull latest code (includes docker-compose.aws.yml)
-            git pull origin master || true
 
             if ! command -v docker >/dev/null 2>&1; then
               sudo apt-get update
@@ -73,10 +79,9 @@ jobs:
 
             docker pull ${{ env.BACKEND_IMAGE }}
             docker pull ${{ env.FRONTEND_IMAGE }}
-            
-            # Now docker-compose.aws.yml exists because git pulled it
-            docker-compose -f docker-compose.aws.yml down || true
-            docker-compose -f docker-compose.aws.yml up -d --remove-orphans
-            
+
+            docker compose -f docker-compose.aws.yml down || true
+            docker compose -f docker-compose.aws.yml up -d --remove-orphans
+
             sleep 5
             curl http://3.26.116.51:5000/api/health || echo "Backend health check pending..."
