@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 
 const path = require("path");
