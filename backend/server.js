@@ -22,7 +22,11 @@ connectDB();
 const app = express();
 
 // Middleware
-const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173", "http://3.26.116.51"]
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://3.26.116.51",
+]
   .filter(Boolean)
   .map((o) => o.replace(/\/$/, ""));
 
@@ -59,7 +63,9 @@ app.get("/api/health", (req, res) => {
 // Error Handler
 app.use((err, req, res, next) => {
   console.error("Backend Error:", err.stack);
-  res.status(500).json({ message: "Internal Server Error", error: err.message });
+  res
+    .status(500)
+    .json({ message: "Internal Server Error", error: err.message });
 });
 
 // Important for Vercel serverless:
