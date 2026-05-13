@@ -1,0 +1,57 @@
+name: Build & Deploy to AWS
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_REGISTRY: soumyosish1
+  BACKEND_IMAGE: soumyosish1/homedine-backend:${{ github.run_number }}
+  FRONTEND_IMAGE: soumyosish1/homedine-frontend:${{ github.run_number }}
+  EC2_IP: ${{ secrets.EC2_IP }}
+  EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}
+
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.FRONTEND_IMAGE }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.EC2_IP }}
+          username: ubuntu
+          key: ${{ env.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/HomeDine
+            docker pull ${{ env.BACKEND_IMAGE }}
+            docker pull ${{ env.FRONTEND_IMAGE }}
+            docker-compose down || true
+            docker-compose up -d --remove-orphans
