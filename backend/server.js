@@ -3,13 +3,17 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
+const path = require("path");
+
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
+dotenv.config(); // Fallback to default
 
 console.log("Environment Debug:");
 console.log("- NODE_ENV:", process.env.NODE_ENV);
 console.log("- MONGO_URI present:", !!process.env.MONGO_URI);
 console.log("- FRONTEND_URL present:", !!process.env.FRONTEND_URL);
+console.log("- PORT:", process.env.PORT);
 
 // Connect to Database
 connectDB();

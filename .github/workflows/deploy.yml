@@ -28,7 +28,11 @@ jobs:
             echo "ERROR: BACKEND_ENV_DOCKER secret is empty or not set in GitHub Secrets!"
             exit 1
           fi
-          echo "$BACKEND_ENV" > .env
+          printf "%s\n" "$BACKEND_ENV" > .env
+          if [ ! -s .env ]; then
+            echo "ERROR: .env file is empty after writing secret!"
+            exit 1
+          fi
           echo "VITE_API_URL=/api" > frontend/.env.docker
           echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
 
