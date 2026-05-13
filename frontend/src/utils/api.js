@@ -1,9 +1,23 @@
 import axios from "axios";
 
-const rawBaseURL =
-  import.meta.env.VITE_API_URL_AWS ||
-  import.meta.env.VITE_API_URL ||
-  "http://localhost:5000/api";
+const getBaseURL = () => {
+  // If explicitly provided via env (e.g. for local development or specific builds)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // Fallback for Docker environment (assuming Nginx proxy at /api)
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    // If we are on localhost, we prefer using the same host with /api
+    // This works perfectly with the Nginx proxy in docker-compose
+    return "/api";
+  }
+
+  // Fallback for AWS or other environments
+  return import.meta.env.VITE_API_URL_AWS || "http://localhost:5000/api";
+};
+
+const rawBaseURL = getBaseURL();
 const API = axios.create({
   baseURL: rawBaseURL.endsWith("/") ? rawBaseURL : `${rawBaseURL}/`,
 });

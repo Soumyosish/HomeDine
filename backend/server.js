@@ -24,8 +24,13 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  "http://localhost",
+  "http://localhost:80",
   "http://localhost:5173",
+  "http://localhost:5000",
+  "http://localhost:3000",
   "http://3.27.9.146",
+  "http://127.0.0.1",
 ]
   .filter(Boolean)
   .map((o) => o.replace(/\/$/, ""));
@@ -33,14 +38,28 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow server-to-server and tools like Postman
+      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      const normalized = origin.replace(/\/$/, "");
-      if (allowedOrigins.includes(normalized)) return callback(null, true);
+      const normalizedOrigin = origin.replace(/\/$/, "");
 
-      return callback(new Error("Not allowed by CORS"));
+      // Check if origin is in allowed list or is a localhost variant
+      const isAllowed =
+        allowedOrigins.includes(normalizedOrigin) ||
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(normalizedOrigin);
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked origin: ${origin}`);
+        // Instead of throwing an error, we just pass false to deny CORS
+        // This avoids triggering the global error handler
+        callback(null, false);
+      }
     },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 app.use(express.json());
