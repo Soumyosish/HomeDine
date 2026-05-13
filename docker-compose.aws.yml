@@ -14,7 +14,7 @@ services:
     image: ${BACKEND_IMAGE}
     container_name: homedine-backend
     env_file:
-      - .env
+      - backend.env
     environment:
       - CORS_ORIGIN=http://3.26.116.51
       - FRONTEND_URL=http://3.26.116.51

@@ -28,7 +28,7 @@ jobs:
             echo "ERROR: BACKEND_ENV_DOCKER secret is empty or not set in GitHub Secrets!"
             exit 1
           fi
-          echo "$BACKEND_ENV" > .env
+          echo "$BACKEND_ENV" > backend.env
           echo "VITE_API_URL=/api" > frontend/.env.docker
           echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
 
@@ -61,7 +61,7 @@ jobs:
           host: ${{ env.EC2_IP }}
           username: ubuntu
           key: ${{ env.EC2_SSH_KEY }}
-          source: "docker-compose.aws.yml,.env"
+          source: "docker-compose.aws.yml,backend.env"
           target: "/home/ubuntu/HomeDine"
 
       - name: Deploy to EC2
