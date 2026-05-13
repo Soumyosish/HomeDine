@@ -18,8 +18,8 @@ services:
     volumes:
       - ./.env:/app/.env
     environment:
-      - CORS_ORIGIN=http://3.26.116.51
-      - FRONTEND_URL=http://3.26.116.51
+      - CORS_ORIGIN=http://3.27.9.146
+      - FRONTEND_URL=http://3.27.9.146
     depends_on:
       - mongo
     restart: unless-stopped

@@ -25,7 +25,7 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
-  "http://3.26.116.51",
+  "http://3.27.9.146",
 ]
   .filter(Boolean)
   .map((o) => o.replace(/\/$/, ""));
