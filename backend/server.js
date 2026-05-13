@@ -8,10 +8,6 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 
-console.log("Environment Debug:");
-console.log("- NODE_ENV:", process.env.NODE_ENV);
-console.log("- MONGO_URI present:", !!process.env.MONGO_URI);
-
 // Connect to Database
 connectDB();
 

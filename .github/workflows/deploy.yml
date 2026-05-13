@@ -24,6 +24,10 @@ jobs:
         env:
           BACKEND_ENV: ${{ secrets.BACKEND_ENV_DOCKER }}
         run: |
+          if [ -z "$BACKEND_ENV" ]; then
+            echo "ERROR: BACKEND_ENV_DOCKER secret is empty or not set in GitHub Secrets!"
+            exit 1
+          fi
           echo "$BACKEND_ENV" > .env
           echo "VITE_API_URL=/api" > frontend/.env.docker
           echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
