@@ -1,23 +1,22 @@
 # HomeDine
 
-HomeDine is a full-stack **ecommerce web application** focused on **quality kitchen and home products for every home which are essentially requires the items for a beautiful and happy home**.  
-It offers high-quality items for daily needs across categories like:
-
+HomeDine is a full-stack **ecommerce web application** focused on quality kitchen and home products for every home.  
+Shop high-quality items for daily needs across categories like:
 - Home Decor
 - Utensils
 - Bottles
 - Cups
 - Spoons
 
-The platform includes browsing, product details, cart, checkout, authentication, profile management, contact, newsletter subscription, and order handling.
+The platform includes browsing, product details, cart, checkout, authentication, profile management, contact, newsletter, and order handling.
 
 ---
 
 ## Live Links
 
-- **Frontend:** https://home-dine.vercel.app
-- **Backend:** https://home-dine-backend.vercel.app
-- **API Health:** https://home-dine-backend.vercel.app/api/health
+- **Frontend:** https://home-dine.vercel.app  
+- **Backend:** https://home-dine-backend.vercel.app  
+- **API Health:** https://home-dine-backend.vercel.app/api/health  
 
 ---
 
@@ -37,8 +36,12 @@ The platform includes browsing, product details, cart, checkout, authentication,
 - JWT Authentication
 - Nodemailer
 
-### Deployment
-- Vercel (Frontend and Backend deployed separately)
+### Infrastructure/DevOps
+- **GitHub Actions:** CI/CD, Docker build & push, EC2 deployment
+- **Vercel:** Production hosting (frontend/backend)
+- **AWS EC2:** Production Docker host (CI/CD target)
+- **Docker:** Containerized frontend and backend
+- **Jenkins:** For local CI/CD builds and Docker orchestration
 
 ---
 
@@ -47,157 +50,33 @@ The platform includes browsing, product details, cart, checkout, authentication,
 ```text
 HomeDine/
 ├── frontend/
-└── backend/
+├── backend/
+├── jenkins/
+├── docker-compose.yml
+├── docker-compose.jenkins.yml
+├── Jenkinsfile
+├── .github/workflows/
+│      └── deploy.yml
 ```
 
 ---
 
-## Frontend Structure (`/frontend`)
+## Main Features
 
-```text
-frontend/
-├── .env
-├── .env.example
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package.json
-├── README.md
-├── vercel.json
-├── vite.config.js
-├── public/
-│   └── logo.avif
-└── src/
-    ├── App.jsx
-    ├── index.css
-    ├── main.jsx
-    ├── assets/
-    ├── components/
-    │   ├── common/
-    │   │   ├── BackToTop.jsx
-    │   │   └── ScrollToTop.jsx
-    │   ├── home/
-    │   │   ├── AccordionSection.jsx
-    │   │   ├── CategoryGrid.jsx
-    │   │   ├── Features.jsx
-    │   │   ├── Hero.jsx
-    │   │   ├── Newsletter.jsx
-    │   │   ├── ProductCard.jsx
-    │   │   ├── ProductGrid.jsx
-    │   │   └── Testimonials.jsx
-    │   └── layout/
-    │       ├── Footer.jsx
-    │       └── Navbar.jsx
-    ├── context/
-    │   ├── AuthContext.jsx
-    │   └── CartContext.jsx
-    ├── data/
-    │   └── mockData.js
-    ├── pages/
-    │   ├── Auth.jsx
-    │   ├── Cart.jsx
-    │   ├── Checkout.jsx
-    │   ├── Contact.jsx
-    │   ├── FAQ.jsx
-    │   ├── ForgotPassword.jsx
-    │   ├── Home.jsx
-    │   ├── ProductDetails.jsx
-    │   ├── Profile.jsx
-    │   ├── ResetPassword.jsx
-    │   └── Shop.jsx
-    └── utils/
-        ├── api.js
-        └── imageMapper.js
-```
-
----
-
-## Backend Structure (`/backend`)
-
-```text
-backend/
-├── .env
-├── .env.example
-├── .gitignore
-├── package.json
-├── server.js
-├── vercel.json
-├── config/
-│   └── db.js
-├── controllers/
-│   ├── contactController.js
-│   ├── orderController.js
-│   ├── productController.js
-│   └── userController.js
-├── middleware/
-│   └── authMiddleware.js
-├── models/
-│   ├── Order.js
-│   ├── Product.js
-│   └── User.js
-├── routes/
-│   ├── contactRoutes.js
-│   ├── orderRoutes.js
-│   ├── productRoutes.js
-│   └── userRoutes.js
-└── utils/
-    └── sendEmail.js
-```
-
----
-
-## Core Features
-
-- Product listing and product detail pages
+- Product listing and detail pages
 - Category-based browsing (home decor, utensils, bottles, cups, spoons)
-- Cart management
-- Checkout flow
-- User authentication (register/login)
+- Cart & checkout
+- User registration/login; profile management
 - Forgot/reset password flow
-- Profile management
-- Contact form and newsletter subscription
-- Order creation and order history
+- Order creation and history
+- Newsletter and contact forms
 - Responsive modern UI
 
 ---
 
-## Environment Variables
+## Local Development
 
-## Frontend (`frontend/.env`)
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-### Frontend Production (Vercel)
-```env
-VITE_API_URL=https://home-dine-backend.vercel.app/api
-```
-
-## Backend (`backend/.env`)
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-FRONTEND_URL=http://localhost:5173
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-NODE_ENV=development
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your_email_user
-EMAIL_PASS=your_email_pass
-```
-
-### Backend Production (Vercel)
-```env
-FRONTEND_URL=https://home-dine.vercel.app
-NODE_ENV=production
-```
-
----
-
-## Local Setup
-
-### 1) Clone
+### 1) Clone and Setup
 ```bash
 git clone https://github.com/Soumyosish/HomeDine.git
 cd HomeDine
@@ -205,97 +84,100 @@ cd HomeDine
 
 ### 2) Install dependencies
 ```bash
-cd frontend
-npm install
-cd ../backend
-npm install
+cd frontend && npm install
+cd ../backend && npm install
 ```
 
-### 3) Run backend
+### 3) Run locally
+- Start MongoDB (local or Docker)
+- In one terminal:  
+  ```bash
+  cd backend
+  npm run dev
+  ```
+- In another terminal:  
+  ```bash
+  cd frontend
+  npm run dev
+  ```
+
+- Frontend: [http://localhost:5173](http://localhost:5173)  
+- Backend: [http://localhost:5000](http://localhost:5000)
+
+---
+
+## Docker Usage
+
+### Local with Compose
+
+Spin up frontend, backend, and MongoDB with **docker-compose**:
 ```bash
-cd backend
-npm run dev
+docker-compose up --build
 ```
 
-### 4) Run frontend
+This uses:
+- `docker-compose.yml` for MongoDB, backend and frontend (prod build)
+
+### Jenkins-Driven Local Build
+
+Use the Jenkins pipeline for local automated builds:
 ```bash
-cd frontend
-npm run dev
+docker-compose -f docker-compose.jenkins.yml up --build
 ```
-
-- Frontend: http://localhost:5173  
-- Backend: http://localhost:5000
+> Jenkins (runs in a container) will manage and monitor Docker builds and deploys.
 
 ---
 
-## Deployment Notes (Vercel)
+## CI/CD: GitHub Actions & AWS EC2
 
-### Frontend Project
-- Root Directory: `frontend`
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Env:
-  - `VITE_API_URL=https://home-dine-backend.vercel.app/api`
+- `.github/workflows/deploy.yml` automates:
+  - Docker builds for frontend & backend
+  - Pushes images to Docker Hub
+  - Deploys via SSH to an AWS EC2 instance
+  - Runs/updates containers using `docker-compose`
 
-### Backend Project
-- Root Directory: `backend`
-- Env:
-  - `MONGO_URI`
-  - `FRONTEND_URL=https://home-dine.vercel.app`
-  - `JWT_SECRET`
-  - `JWT_EXPIRES_IN=7d`
-  - `EMAIL_HOST`
-  - `EMAIL_PORT`
-  - `EMAIL_USER`
-  - `EMAIL_PASS`
-  - `NODE_ENV=production`
+### Environment/Secrets
+- `DOCKER_USERNAME`, `DOCKER_PASSWORD` for Docker Hub push
+- `EC2_IP`, `EC2_SSH_KEY` for remote AWS access
+
+#### EC2 Deployment Steps (Automated via GitHub Actions):
+1. Build/push Docker images
+2. SSH into EC2 and pull new images
+3. Use `docker-compose` to relaunch containers
 
 ---
 
-## Main API Endpoints
+## Production Deployment (Vercel)
 
-- `GET /api/health`
-- `POST /api/users/register`
-- `POST /api/users/login`
-- `POST /api/users/forgot-password`
-- `POST /api/users/reset-password/:token`
-- `GET /api/products`
-- `GET /api/products/:id`
-- `POST /api/orders`
-- `GET /api/orders/myorders`
-- `POST /api/contact`
-- `POST /api/contact/subscribe`
+- Frontend and backend are deployable as separate Vercel projects.
+- Provide necessary env variables in Vercel dashboard or `.env` files.
 
 ---
 
-## Scripts
+## Jenkins Pipeline (For Local CI/CD)
+
+See [`Jenkinsfile`](https://github.com/Soumyosish/HomeDine/blob/master/Jenkinsfile) for stages:
+- Checkout, Docker build, (optionally push, deploy)
+
+## Environment Variables
 
 ### Frontend
-```bash
-npm run dev
-npm run build
-npm run preview
-```
+- `VITE_API_URL` (local: `http://localhost:5000/api`, prod: `https://home-dine-backend.vercel.app/api`)
 
 ### Backend
-```bash
-npm run dev
-npm start
-```
+- `MONGO_URI`, `JWT_SECRET`, `FRONTEND_URL`, mail config, etc.
 
 ---
 
 ## Troubleshooting
 
-- **CORS issue:** Verify `FRONTEND_URL` in backend env matches deployed frontend URL.
-- **API not reachable from frontend:** Ensure `VITE_API_URL` includes `/api`.
-- **Auth token issues:** Verify `JWT_SECRET` and `JWT_EXPIRES_IN`.
-- **Database errors:** Check `MONGO_URI`.
-- **Mail errors:** Check `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`.
+- CORS: Check `FRONTEND_URL` in backend `.env`
+- Mongo/DB: Validate `MONGO_URI`
+- JWT/config: Ensure secrets and expires
+- Mail: Check SMTP credentials
 
 ---
 
 ## License
 
 Developed by Soumyosish
-
