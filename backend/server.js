@@ -4,7 +4,9 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 // Load environment variables
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 // Connect to Database
 connectDB();
