@@ -52,6 +52,15 @@ jobs:
           source: "docker-compose.aws.yml"
           target: "/home/ubuntu/HomeDine"
 
+      - name: Copy backend env file to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.EC2_IP }}
+          username: ubuntu
+          key: ${{ env.EC2_SSH_KEY }}
+          source: "backend/.env.docker"
+          target: "/home/ubuntu/HomeDine/backend"
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
