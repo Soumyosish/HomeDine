@@ -54,6 +54,9 @@ jobs:
 
             cd /home/ubuntu/HomeDine
 
+            # Pull latest code (includes docker-compose.aws.yml)
+            git pull origin master || true
+
             if ! command -v docker >/dev/null 2>&1; then
               sudo apt-get update
               sudo apt-get install -y docker.io
@@ -71,7 +74,7 @@ jobs:
             docker pull ${{ env.BACKEND_IMAGE }}
             docker pull ${{ env.FRONTEND_IMAGE }}
             
-            # Use AWS-specific compose file on EC2
+            # Now docker-compose.aws.yml exists because git pulled it
             docker-compose -f docker-compose.aws.yml down || true
             docker-compose -f docker-compose.aws.yml up -d --remove-orphans
             
