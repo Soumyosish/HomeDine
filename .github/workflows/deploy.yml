@@ -51,6 +51,12 @@ jobs:
           key: ${{ env.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/HomeDine
+            # install docker-compose if missing
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Installing docker-compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
             docker pull ${{ env.BACKEND_IMAGE }}
             docker pull ${{ env.FRONTEND_IMAGE }}
             docker-compose down || true
