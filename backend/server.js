@@ -43,7 +43,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ ok: true });
+  res.status(200).json({ ok: true, db: mongoose.connection.readyState });
+});
+
+// Error Handler
+app.use((err, req, res, next) => {
+  console.error("Backend Error:", err.stack);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
 });
 
 // Important for Vercel serverless:

@@ -22,8 +22,7 @@ jobs:
 
       - name: Create environment files
         run: |
-          mkdir -p backend frontend
-          echo "${{ secrets.BACKEND_ENV_DOCKER }}" > backend/.env.docker
+          echo "${{ secrets.BACKEND_ENV_DOCKER }}" > .env.docker
           echo "VITE_API_URL=/api" > frontend/.env.docker
           echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
 
@@ -56,7 +55,7 @@ jobs:
           host: ${{ env.EC2_IP }}
           username: ubuntu
           key: ${{ env.EC2_SSH_KEY }}
-          source: "docker-compose.aws.yml,backend/.env.docker"
+          source: "docker-compose.aws.yml,.env.docker"
           target: "/home/ubuntu/HomeDine"
 
       - name: Deploy to EC2
