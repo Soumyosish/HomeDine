@@ -12,7 +12,7 @@ connectDB();
 const app = express();
 
 // Middleware
-const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"]
+const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173", "http://3.26.116.51"]
   .filter(Boolean)
   .map((o) => o.replace(/\/$/, ""));
 
