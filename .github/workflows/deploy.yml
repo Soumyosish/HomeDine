@@ -25,7 +25,7 @@ jobs:
           mkdir -p backend frontend
           echo "${{ secrets.BACKEND_ENV_DOCKER }}" > backend/.env.docker
           echo "VITE_API_URL=/api" > frontend/.env.docker
-          echo "VITE_API_URL_AWS=http://${{ env.EC2_IP }}:5000/api" >> frontend/.env.docker
+          echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

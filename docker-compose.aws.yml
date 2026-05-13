@@ -28,7 +28,7 @@ services:
     image: ${FRONTEND_IMAGE}
     container_name: homedine-frontend
     environment:
-      - VITE_API_URL_AWS=http://3.26.116.51:5000/api
+      - VITE_API_URL_AWS=/api
     depends_on:
       - backend
     restart: unless-stopped
