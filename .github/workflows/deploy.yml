@@ -51,16 +51,19 @@ jobs:
           key: ${{ env.EC2_SSH_KEY }}
           script: |
             set -e
+
+            # remove problematic Jenkins apt source so apt-get update won't fail
+            sudo rm -f /etc/apt/sources.list.d/jenkins.list || true
+            sudo sed -i '/pkg.jenkins.io/d' /etc/apt/sources.list || true
+
             cd /home/ubuntu/HomeDine
 
-            # ensure docker is present
             if ! command -v docker >/dev/null 2>&1; then
               sudo apt-get update
               sudo apt-get install -y docker.io
               sudo systemctl enable --now docker
             fi
 
-            # install docker compose plugin (v2) and provide docker-compose fallback
             if ! docker compose version >/dev/null 2>&1; then
               sudo apt-get update
               sudo apt-get install -y ca-certificates curl
