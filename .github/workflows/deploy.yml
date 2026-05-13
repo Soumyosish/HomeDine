@@ -24,7 +24,7 @@ jobs:
         env:
           BACKEND_ENV: ${{ secrets.BACKEND_ENV_DOCKER }}
         run: |
-          echo "$BACKEND_ENV" > .env.docker
+          echo "$BACKEND_ENV" > .env
           echo "VITE_API_URL=/api" > frontend/.env.docker
           echo "VITE_API_URL_AWS=/api" >> frontend/.env.docker
 
@@ -57,7 +57,7 @@ jobs:
           host: ${{ env.EC2_IP }}
           username: ubuntu
           key: ${{ env.EC2_SSH_KEY }}
-          source: "docker-compose.aws.yml,.env.docker"
+          source: "docker-compose.aws.yml,.env"
           target: "/home/ubuntu/HomeDine"
 
       - name: Deploy to EC2
