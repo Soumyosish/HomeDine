@@ -1,6 +1,6 @@
 # HomeDine
 
-HomeDine is a full-stack **ecommerce web application** focused on quality kitchen and home products for every home.  
+HomeDine is a full-stack **ecommerce web application** focused on quality kitchen and home products for every home required in everyday life.  
 Shop high-quality items for daily needs across categories like:
 
 - Home Decor
