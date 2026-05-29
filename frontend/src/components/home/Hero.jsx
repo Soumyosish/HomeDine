@@ -30,7 +30,7 @@ const Hero = () => {
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-brand-forest leading-[0.95] mb-8 tracking-tighter">
-              Beautiful Home, Soumyosish Pal<br />
+              Beautiful Home,<br />
               <span className="italic text-brand-gold">Better</span> Life
             </h1>
 
